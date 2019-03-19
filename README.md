@@ -27,3 +27,9 @@ CondenseMyTalk is made in Python 3 with Django. This project also makes use of t
 create lecture transcripts. Create an account with Google Cloud and include the API as Python environment variables to
 make use of that functionality. Additionally, install all required python libraries in requirements.txt. Once this is
 complete, start the Django server to begin a version of the platform.
+
+## TODO
+For future work I would like to incorporate optical character recognition that can analyze the importance of a certain frame and take that
+into account in the importance curve of the video. Additionally, the two aspects of the program that take the largest amount of compute
+time is creating a transcript - which is a necessary evil - and exporting the condensed video together. Possibly, instead of creating an
+entirely new video, to scrub through the existing video as the video continues.

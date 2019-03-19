@@ -9,6 +9,8 @@
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
+CondenseMyTalk-2670f159cbdf.json
+media/
 
 # Build results
 [Dd]ebug/

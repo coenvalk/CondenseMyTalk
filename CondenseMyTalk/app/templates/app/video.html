@@ -1,0 +1,100 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+{% load static %}
+
+<h2>{{ title }}.</h2>
+<h3>{{ message }}</h3>
+
+<script>
+    function makeCard(parentElt, info) {
+        card = document.createElement('div');
+        card.className = 'supplemental';
+        parentElt.appendChild(card);
+        card.innerHTML = '<p>' + info.comment + '</p><a href="' + info.link + '" target="_blank">Read More</a>';
+        setTimeout(function () {
+            card.remove();
+        }, 10000);
+    }
+</script>
+
+<div id="content">
+    <div id="video" style="column-count:2">
+        <video id="vid" width="100%" autoplay controls>
+            <source src="{{ MEDIA_URL }}{{ videofile }}" type="video/mp4" />
+            Your browser doens't support the video tag... Feels bad man :(
+        </video>
+        {% if rois %}
+        <div id="supplemental" width="100%">
+        </div>
+        {% endif %}
+    </div>
+    {% if form %}
+    <div id="comment" width="100%">
+        <form enctype="multipart/form-data" method="POST" action="">
+            {% csrf_token %}
+            <label>
+                <input type="radio" name="positive" value="True">
+                <img id="upvote" src="{% static "app/imgs/upvote.jpg" %}" width="20" />
+            </label>
+            <label>
+                <input type="radio" name="positive" value="False">
+                <img id="downvote" src="{% static "app/imgs/downvote.png" %}" width="20" />
+            </label>
+            <textarea rows="5", cols="60" name="comment">Comment.</textarea>
+            <br />
+            Supplemental Link: <input type="url" name="link" /> <br />
+            <br />
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    var regions = {};
+
+    {% for roi in rois %}
+    obj = {
+        'timestamp': {{ roi.timestamp }},
+        'link': '{{ roi.link }}',
+        'comment': '{{ roi.comment }}',
+        'positive': '{{ roi.positive }}'
+    };
+    if (regions[{{ roi.timestamp }}] === undefined) {
+        regions[{{ roi.timestamp }}] = [obj];
+    } else {
+        regions[{{ roi.timestamp }}].push(obj);
+    }
+    {% endfor %}
+
+    console.log(regions);
+
+
+    var vid = document.getElementById("vid");
+    vid.ontimeupdate = function() {myFunction()};
+    function myFunction() {
+        p = document.getElementById("supplemental");
+        r = regions[Math.round(vid.currentTime)];
+        if (r !== undefined) {
+            for (var i = 0; i < r.length; i++) {
+                if (!r[i].added) {
+                    makeCard(p, r[i]);
+                    r[i].added = true;
+                }
+            }
+        }
+    }
+
+    function validate() {
+        if (document.forms["RegForm"]["positive"].value === "True") {
+            console.log("positive");
+        }
+        document.forms["RegForm"]["timestamp"] = vid.currentTime;
+        console.log(document.forms["RegForm"]);
+
+        return true;
+    }
+</script>
+
+{% endblock %}

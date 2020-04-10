@@ -1,3 +1,0 @@
-[console_scripts]
-yaml_1_3 = yaml_1_3.__main__:main
-
